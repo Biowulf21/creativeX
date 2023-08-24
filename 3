@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Http\Repositories\UserRepository;
+
+interface UserRepositoryInterface
+{
+    public function login(arr $data);
+    public function signUp(arr $data);
+    public function singOut();
+}
