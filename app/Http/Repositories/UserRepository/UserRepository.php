@@ -13,8 +13,27 @@ use App\Exceptions\AlreadyLoggedInException;
 class UserRepository implements UserRepositoryInterface
 {
 
-    public void function login()
+    public function login(array $data): Response
     {
+        if(Auth::check())
+        {
+          throw new AlreadyLoggedInException;
+        }
+
+        if (!Auth::attempt($data))
+        {
+            throw new InvalidCredentialsException;
+        }
+
+        $user = Auth::user();
+
+        if ($user instanceof \App\Models\User)
+        {
+        $token = $user->createToken('auth_token')->accessToken;
+        return response(status: 200)->json(['message'=>'Logged in successfully', 'token'=> $token]);
+        }
+
+        return response()->error('Something went wrong', 500);
 
     }
     public function signUp()
