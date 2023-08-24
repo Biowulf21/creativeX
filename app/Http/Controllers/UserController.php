@@ -19,3 +19,10 @@ use Illuminate\Http\Response;
     {
         return $this->user_repository->signOut();
     }
+
+    //TODO: update params with proper sign up request class
+    public function store(Request $request): Response
+    {
+        return $this->user_repository->signUp($request->all());
+    }
+
