@@ -23,5 +23,5 @@ interface UserRepositoryInterface
     /**
      * @return void
      */
-    public function singOut();
+    public function signOut();
 }

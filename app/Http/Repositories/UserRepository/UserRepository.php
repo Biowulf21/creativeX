@@ -54,7 +54,7 @@ class UserRepository implements UserRepositoryInterface
         return response()->json(['user'=> $user, 'token'=> $accessToken])->status(200);
     }
 
-    public function singOut(): Response
+    public function signOut(): Response
     {
         Auth::logout();
         return response('Logged out successfully', 200);
