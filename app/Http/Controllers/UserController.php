@@ -15,3 +15,7 @@ use Illuminate\Http\Response;
     {
         return $this->user_repository->login($request->all());
     }
+    public function logOutUser(): Response
+    {
+        return $this->user_repository->signOut();
+    }
