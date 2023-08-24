@@ -11,3 +11,7 @@ use Illuminate\Http\Response;
         $this->user_repository = $user_repository;
     }
 
+    public function logInUser(LoginRequest $request): Response
+    {
+        return $this->user_repository->login($request->all());
+    }
