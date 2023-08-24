@@ -36,9 +36,22 @@ class UserRepository implements UserRepositoryInterface
         return response()->error('Something went wrong', 500);
 
     }
-    public function signUp()
-    {
 
+    public function signUp(array $data): Response
+    {
+        $password = $data['password'];
+        $password = Hash::make($password);
+
+        $user = new User;
+
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = $password;
+
+        $user->save();
+        $accessToken = $user->createToken('auth_token')->accessToken;
+
+        return response()->json(['user'=> $user, 'token'=> $accessToken])->status(200);
     }
     public function singOut()
     {
