@@ -37,12 +37,12 @@ class UserController extends Controller
      * Sign up a new user.
      */
 
-    public function logInUser(LoginRequest $request): Response
+    public function logInUser(LoginRequest $request): JsonResponse
     {
         return $this->user_repository->login($request->all());
     }
 
-    public function logOutUser(): Response
+    public function logOutUser(): JsonResponse
     {
         return $this->user_repository->signOut();
     }
