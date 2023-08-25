@@ -184,6 +184,28 @@ class UserUnitTest extends TestCase
 
     public function test_unsucessfully_sign_up_user_doesnt_exist(){
 
+        $user = [
+            'name' => 'Giles Lang',
+            'password' => 'Password123!',
+            'email' => 'forrest83@example.net',
+            'account_handle' => 'oten_dako',
+            'bio' => 'Consequuntur commodi assumenda ut ex consequatur ad. Soluta et aut quae facilis. Magni fugiat fuga ut veniam libero.',
+        ];
+
+        $this->assertDatabaseCount('users', 0);
+        $loginData = [
+            'email' => $user['email'],
+            'password' => $user['password'],
+            'confirm_password' => $user['password'],
+        ];
+
+        $loginResponse = $this->post('/api/login', $loginData);
+        $this->assertEquals(404, $loginResponse->getStatusCode());
+
+        $loginResponse->assertJsonStructure([
+            'message',
+        ]);
+
     }
 
 
