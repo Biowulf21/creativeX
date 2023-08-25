@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Http\Repositories\UserRepository\UserRepository as AppUserRepository;
 use App\Models\User;
-use Database\Factories\UserFactory;
 use Tests\TestCase;
 
 use App\Exceptions\PasswordMismatchException;
@@ -61,7 +60,7 @@ class UserUnitTest extends TestCase
     public function test_unsucessfully_sign_up_user_missing_password()
     {
         $this->assertDatabaseCount('users', 0);
-        $user = User::factory ()->create();
+
         $user = [
             'name' => 'Giles Lang',
             'email' => 'forrest83@example.net',
@@ -115,5 +114,8 @@ class UserUnitTest extends TestCase
                 'account_handle'
             ]
         ]);
+    }
+    public function test_unsucessfully_sign_up_user_doesnt_exist(){
+
     }
 }
