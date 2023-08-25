@@ -4,7 +4,6 @@ namespace App\Http\Repositories\UserRepository;
 
 use App\Exceptions\InvalidCredentialsException;
 use App\Http\Repositories\UserRepository\UserRepositoryInterface;
-use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -15,7 +14,7 @@ use App\Exceptions\AlreadyLoggedInException;
 class UserRepository implements UserRepositoryInterface
 {
 
-    public function login(array $data): Response
+    public function login(array $data): JsonResponse
     {
         if(Auth::check())
         {
