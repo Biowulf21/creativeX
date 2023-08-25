@@ -9,6 +9,6 @@ class InvalidCredentialsException extends Exception
     public function render($request)
     {
 
-        return response()->json(['message' => 'Invalid credentials'], 400);
+        return response()->json(['message' => 'Invalid credentials. User not found.'], 404);
     }
 }
