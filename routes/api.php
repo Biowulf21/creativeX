@@ -20,12 +20,8 @@ use Illuminate\Support\Facades\Route;
 /* }); */
 
 
-Route::group(['prefix' => 'api'], function () {
-    Route::controller(UserController::class)->group(function(){
-        Route::post('/login', 'loginUser');
-        Route::post('/signup', 'store');
-        Route::get('/logout', 'logOutUser');
+Route::controller(UserController::class)->group(function(){
+    Route::post('/login', 'loginUser');
+    Route::post('/signup', 'store');
+    Route::get('/logout', 'logOutUser');
     });
-
-    // TODO: add routes for other controlers
-});
