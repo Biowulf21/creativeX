@@ -57,7 +57,7 @@ class UserRepository implements UserRepositoryInterface
         $user->save();
         $accessToken = $user->createToken('auth_token')->accessToken;
 
-        return response()->json(['user'=> $user, 'token'=> $accessToken])->status(200);
+        return response()->json(['user'=> $user, 'token'=> $accessToken])->setStatusCode(200);
     }
 
     public function signOut(): Response
