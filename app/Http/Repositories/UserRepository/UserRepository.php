@@ -55,7 +55,7 @@ class UserRepository implements UserRepositoryInterface
 
 
         $user->save();
-        $accessToken = $user->createToken('auth_token')->accessToken;
+        $accessToken = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json(['user'=> $user, 'token'=> $accessToken])->setStatusCode(200);
     }
