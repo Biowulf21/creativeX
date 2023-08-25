@@ -115,7 +115,76 @@ class UserUnitTest extends TestCase
             ]
         ]);
     }
+
+    public function test_successfully_login_user(){
+
+        $this->assertDatabaseCount('users', 0);
+        $user = [
+            'name' => 'Giles Lang',
+            'password' => 'Password123!',
+            'email' => 'forrest83@example.net',
+            'account_handle' => 'giles_lang',
+            'bio' => 'Consequuntur commodi assumenda ut ex consequatur ad. Soluta et aut quae facilis. Magni fugiat fuga ut veniam libero.',
+        ];
+
+        $response = $this->post('/api/signup', $user);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        /* $this->assertDatabaseCount('users', 1); */
+
+
+        $loginData = [
+            'email' => $user['email'],
+            'password' => $user['password'],
+            'confirm_password' => 'Password123!',
+        ];
+
+        $loginResponse = $this->post('/api/login', $loginData);
+        $this->assertEquals(200, $loginResponse->getStatusCode());
+
+        $loginResponse->assertJsonStructure([
+            'message',
+            'token',
+        ]);
+
+    }
+
+    public function test_unsucessfully_login_user_no_confirm_password(){
+
+        $this->assertDatabaseCount('users', 0);
+        $user = [
+            'name' => 'Giles Lang',
+            'password' => 'Password123!',
+            'email' => 'forrest83@example.net',
+            'account_handle' => 'oten_dako',
+            'bio' => 'Consequuntur commodi assumenda ut ex consequatur ad. Soluta et aut quae facilis. Magni fugiat fuga ut veniam libero.',
+        ];
+
+        $response = $this->post('/api/signup', $user);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertDatabaseCount('users', 1);
+
+
+        $loginData = [
+            'email' => $user['email'],
+            'password' => $user['password'],
+        ];
+
+        $loginResponse = $this->post('/api/login', $loginData);
+        $this->assertEquals(400, $loginResponse->getStatusCode());
+
+        $loginResponse->assertJsonStructure([
+            'message',
+            'errors'=> [
+                'confirm_password'
+        ]
+        ]);
+    }
+
     public function test_unsucessfully_sign_up_user_doesnt_exist(){
 
     }
+
+
 }
