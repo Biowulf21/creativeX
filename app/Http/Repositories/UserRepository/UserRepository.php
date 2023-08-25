@@ -31,8 +31,8 @@ class UserRepository implements UserRepositoryInterface
 
         if ($user instanceof \App\Models\User)
         {
-            $token = $user->createToken('auth_token')->accessToken;
-            return response(status: 200)->json(['message'=>'Logged in successfully', 'token'=> $token]);
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json(['message'=>'Logged in successfully', 'token'=> $token])->setStatusCode(200);
         }
 
         return response()->error('Something went wrong', 500);
