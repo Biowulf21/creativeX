@@ -8,6 +8,7 @@ class InvalidCredentialsException extends Exception
 {
     public function render($request)
     {
-        return response()->error('Invalid credentials', 400);
+
+        return response()->json(['message' => 'Invalid credentials'], 400);
     }
 }
