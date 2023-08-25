@@ -39,8 +39,9 @@ class UserRepository implements UserRepositoryInterface
 
     }
 
-    public function signUp(array $data): Response
+    public function signUp(array $data): JsonResponse
     {
+
         $password = $data['password'];
         $password = Hash::make($password);
 
