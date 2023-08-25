@@ -60,10 +60,10 @@ class UserRepository implements UserRepositoryInterface
         return response()->json(['user'=> $user, 'token'=> $accessToken])->setStatusCode(200);
     }
 
-    public function signOut(): Response
+    public function signOut(): JsonResponse
     {
         Auth::logout();
-        return response('Logged out successfully', 200);
+        return response()->json(['message'=>'Logged out successfully'])->setStatusCode(200);
     }
 
 }
