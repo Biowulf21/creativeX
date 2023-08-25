@@ -50,6 +50,9 @@ class UserRepository implements UserRepositoryInterface
         $user->name = $data['name'];
         $user->email = $data['email'];
         $user->password = $password;
+        $user->account_handle = $data['account_handle'];
+        $user->bio = $data['bio'];
+
 
         $user->save();
         $accessToken = $user->createToken('auth_token')->accessToken;
