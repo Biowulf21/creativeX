@@ -13,26 +13,11 @@ class TweetRepository implements TweetRepositoryInterface
 {
     public function createTweet(array $data)
     {
+        $new_tweet = $this->populateNewTweetAttributes($data);
+        $new_tweet_attachment = $new_tweet->tweet_attachment_link;
 
-        $user_id = Auth::user()->id;
 
-        $retweet_count = 0;
-        $likes_count = 0;
-        $is_retweet = $data['is_retweet'] == '1' ? true : false;
-        $tweet_attachment = $data['tweet_attachment'][0] ??= null;
-
-        $data['user_id'] = $user_id; // Set the user_id
-
-        $data['retweet_count'] = $retweet_count;
-        $data['likes_count'] = $likes_count;
-        $data['is_retweet'] = $is_retweet;
-
-        $new_tweet = new Tweet;
-        $new_tweet->fill($data);
-        $new_tweet->user_id = $user_id;
-        $new_tweet->tweet_attachment_link = $tweet_attachment;
-
-        if ($tweet_attachment != null){
+        if ($new_tweet_attachment != null){
             $attachmentRepository = app(AttachmentRepositoryInterface::class);
             $upload_response = $attachmentRepository->uploadAttachment($tweet_attachment);
 
@@ -60,6 +45,29 @@ class TweetRepository implements TweetRepositoryInterface
 
     }
 
+    private function populateNewTweetAttributes(array $data)
+    {
+
+        $user_id = Auth::user()->id;
+
+        $retweet_count = 0;
+        $likes_count = 0;
+        $is_retweet = $data['is_retweet'] == '1' ? true : false;
+        $tweet_attachment = $data['tweet_attachment'][0] ??= null;
+
+        $data['user_id'] = $user_id;
+
+        $data['retweet_count'] = $retweet_count;
+        $data['likes_count'] = $likes_count;
+        $data['is_retweet'] = $is_retweet;
+
+        $new_tweet = new Tweet;
+        $new_tweet->fill($data);
+        $new_tweet->user_id = $user_id;
+        $new_tweet->tweet_attachment_link = $tweet_attachment;
+        return $new_tweet;
+
+    }
 
     public function updateTweet(int $id, array $data)
     {
