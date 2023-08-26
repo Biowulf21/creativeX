@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\RetweetController;
+use App\Http\Controllers\TweetController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,3 +28,10 @@ Route::controller(UserController::class)->group(function(){
     Route::post('/signup', 'store');
     Route::get('/logout', 'logOutUser');
     });
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::resource('tweets', TweetController::class);
+    Route::resource('retweets', RetweetController::class);
+});
+
