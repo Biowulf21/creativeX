@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Repositories\UserRepository\UserRepositoryInterface;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\signUpRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\SignUpRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -48,7 +47,7 @@ class UserController extends Controller
     }
 
     //TODO: update params with proper sign up request class
-    public function store(signUpRequest $request): JsonResponse
+    public function store(SignUpRequest $request): JsonResponse
     {
         return $this->user_repository->signUp($request->all());
     }
