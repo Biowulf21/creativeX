@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use Illuminate\Http\Request;
 
 class TweetController extends Controller
 {
+
+    private $tweet_repository;
+    public function __construct(TweetRepositoryInterface $tweet_repository){
+        $this->tweet_repository = $tweet_repository;
+    }
+
     /**
      * Display a listing of the resource.
      */
