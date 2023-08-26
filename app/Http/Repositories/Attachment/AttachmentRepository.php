@@ -7,19 +7,18 @@ use Intervention\Image\Facades\Image;
 
 class AttachmentRepository implements AttachmentRepositoryInterface
 {
-    public function uploadAttachment(array $data): JsonResponse
+    public function uploadAttachment($file): JsonResponse
     {
-        if (!isset($data['attachment_file'])) {
+        if ($file == null)
+        {
             return response()->json(['error' => 'File not provided'], 400);
         }
-
         try {
-            $image = $data['attachment_file'];
-            $image->save('storage/tweets/attachments/' . $image->getClientOriginalName());
+            $file->store('public/tweets/attachments');
 
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred while saving the image'], 500);
         }
-        return response()->json(['message'=>'Attachment uploaded successfully', 'file_path'=>$image], 200);
+        return response()->json(['message'=>'Attachment uploaded successfully', 'file_path'=>$file], 200);
     }
 }
