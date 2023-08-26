@@ -34,7 +34,9 @@ class TweetRepository implements TweetRepositoryInterface
         if ($tweet_attachment != null){
             $attachmentRepository = app(AttachmentRepositoryInterface::class);
             $upload_response = $attachmentRepository->uploadAttachment($tweet_attachment);
+
             if($upload_response->status() == 500) return $upload_response;
+            $new_tweet->tweet_attachment_link = $upload_response->getData()->file_path;
         }
 
         echo $new_tweet->tweet_attachment;
