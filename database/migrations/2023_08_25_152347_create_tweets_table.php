@@ -23,6 +23,9 @@ return new class extends Migration
             $table->unsignedBigInteger('likes_count')->default(0);
             $table->unsignedBigInteger('retweets_count')->default(0);
             $table->boolean('is_retweet')->default(false);
+
+            $table->string('tweet_attachment_link')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
         });
