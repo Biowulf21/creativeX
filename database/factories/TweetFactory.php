@@ -28,8 +28,7 @@ class TweetFactory extends Factory
 
         'replying_to' => fake()->randomElement([function(){
                 $tweet = Tweet::inRandomOrder()->first->value('id');
-                if ($tweet == null) return null;
-                return $tweet;
+                return $tweet ??= null;
                 }, null]),
 
         'user_id' => function () { return User::factory()->make()->id; },
