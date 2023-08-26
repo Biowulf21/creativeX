@@ -25,7 +25,7 @@ class NewTweetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tweet_body' => 'required|string|max:280',
+            'tweet_body' => 'required|string|max:280|min:1',
             'replying_to' => 'nullable|exists:tweets,id',
             'user_id' => 'required|exists:users,id',
             'is_retweet' => 'boolean',
