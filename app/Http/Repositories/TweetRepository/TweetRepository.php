@@ -4,6 +4,7 @@ namespace App\Http\Repositories\TweetRepository;
 
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Models\Tweet;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 class TweetRepository implements TweetRepositoryInterface
@@ -43,6 +44,18 @@ class TweetRepository implements TweetRepositoryInterface
 
     public function deleteTweet(int $id)
     {
+        try {
+
+            $tweet_to_delete = Tweet::findOrFail($id);
+            $tweet_id = $tweet_to_delete->id;
+            $tweet_to_delete->delete();
+
+            return response()->json(['message'=>'Sucessfully deleted tweet with ID #' . $tweet_id, 'deleted_tweet_id'=> $tweet_id], 200);
+
+
+        } catch (ModelNotFoundException) {
+            return response()->json(['message' => 'Cannot delete. Tweet not found.'], 404);
+        }
     }
 
 }
