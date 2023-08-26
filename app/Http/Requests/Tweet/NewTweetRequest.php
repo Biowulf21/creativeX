@@ -29,7 +29,8 @@ class NewTweetRequest extends FormRequest
             'replying_to' => 'nullable|int|exists:tweets,id',
             'user_id' => 'required|exists:users,id',
             'is_retweet' => 'boolean',
-            'tweet_attachment' => [ 'nullable', 'prohibited_if:is_retweet,true', 'file', 'max:1', 'size:2000' ]
+            'tweet_attachment' => [  'nullable', 'prohibited_if:is_retweet,true', 'array', 'max:1'],
+            'tweet_attachment.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];
     }
 
