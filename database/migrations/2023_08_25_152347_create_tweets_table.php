@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('replying_to')->nullable();
             $table->foreign('replying_to')->references('id')->on('tweets');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->unsignedBigInteger('likes_count')->default(0);
