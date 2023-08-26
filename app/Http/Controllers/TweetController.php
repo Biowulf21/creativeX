@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Http\Requests\Tweet\NewTweetRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TweetController extends Controller
@@ -24,8 +25,9 @@ class TweetController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     * @return JsonResponse
      */
-    public function create()
+    public function create(): JsonResponse
     {
     }
 
@@ -47,16 +49,18 @@ class TweetController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     * @return JsonResponse
      */
-    public function edit(string $id)
+    public function edit(string $id): JsonResponse
     {
         //
     }
 
     /**
      * Update the specified resource in storage.
+     * @return JsonResponse
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
         //
     }
