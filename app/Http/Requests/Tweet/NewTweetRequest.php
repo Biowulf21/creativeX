@@ -32,6 +32,14 @@ class NewTweetRequest extends FormRequest
         ];
     }
 
+    public function messages(){
+        return [
+            'user_id.exists' => 'The user_id must be an existing user',
+            'replying_to.exists'=> 'You can only reply to an existing tweet'
+        ];
+
+    }
+
 
    /**
      * Handle a failed validation attempt.
