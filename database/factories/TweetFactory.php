@@ -18,22 +18,22 @@ class TweetFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-        'tweet_body' => fake()->realText(280),
-
-        //NOTE:: The following line is a bit more complex than the others.
-        //It uses the fake() helper function to generate a random element from an array of values.
-        //The array contains two values: a function that returns a random tweet ID,
-        //and null. This is to ensure that the tweet can be a reply to another tweet,
 
         $tweetIDorNull = fake()->randomElement([function () {
             $tweet = Tweet::inRandomOrder()->first();
             return $tweet ? $tweet->id : null;
-        }, null]),
+        }, null]);
 
         $userID = function () {
             return User::inRandomOrder()->first()->id;
-        },
+        };
+
+        return [
+        'tweet_body' => fake()->realText(280),
+        //NOTE:: The following line is a bit more complex than the others.
+        //It uses the fake() helper function to generate a random element from an array of values.
+        //The array contains two values: a function that returns a random tweet ID,
+        //and null. This is to ensure that the tweet can be a reply to another tweet,
 
         'replying_to' => $tweetIDorNull,
         'user_id' => $userID,
