@@ -18,6 +18,10 @@ class AttachmentRepository implements AttachmentRepositoryInterface
 
             Storage::disk('public')->put('tweets/attachments', $file);
             $filePath = 'tweets/attachments/' . $file->hashName(); // Use the appropriate path structure
+
+            // NOTE: The php artisan storage:link command has been run already,
+            // so the Storage::url() method will return the publicly available correct URL
+            // docs: https://laravel.com/docs/10.x/filesystem#the-public-disk
             $fileUrl = Storage::url($filePath);
 
         } catch (\Exception $e) {
