@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Http\Requests\Tweet\NewTweetRequest;
+use App\Http\Requests\Tweet\UpdateTweetRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -60,9 +61,9 @@ class TweetController extends Controller
      * Update the specified resource in storage.
      * @return JsonResponse
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateTweetRequest $request, int $id): JsonResponse
     {
-        //
+        return  $this->tweet_repository->updateTweet($id, $request->all());
     }
 
     /**
