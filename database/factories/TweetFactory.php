@@ -30,6 +30,7 @@ class TweetFactory extends Factory
 
         return [
         'tweet_body' => fake()->realText(280),
+
         //NOTE:: The following line is a bit more complex than the others.
         //It uses the fake() helper function to generate a random element from an array of values.
         //The array contains two values: a function that returns a random tweet ID,
