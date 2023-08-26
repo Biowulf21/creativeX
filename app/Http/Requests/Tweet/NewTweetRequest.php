@@ -29,13 +29,18 @@ class NewTweetRequest extends FormRequest
             'replying_to' => 'nullable|exists:tweets,id',
             'user_id' => 'required|exists:users,id',
             'is_retweet' => 'boolean',
+            'tweet_attacment' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+
         ];
     }
 
     public function messages(){
         return [
             'user_id.exists' => 'The user_id must be an existing user',
-            'replying_to.exists'=> 'You can only reply to an existing tweet'
+            'replying_to.exists'=> 'You can only reply to an existing tweet',
+            'tweet_attacment.image' => 'The attachment must be an image',
+            'tweet_attacment.mimes' => 'The attachment must be a jpeg, png, jpg, gif or svg file',
+            'tweet_attacment'=> 'The attachment must not be more than 2MB',
         ];
 
     }
