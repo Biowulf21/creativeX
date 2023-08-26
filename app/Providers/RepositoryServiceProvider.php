@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Repositories\TweetRepository\TweetRepository;
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Http\Repositories\UserRepository\UserRepository;
 use App\Http\Repositories\UserRepository\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
-use TweetRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
