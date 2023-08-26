@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Repositories\Attachment\AttachmentRepository;
+use App\Http\Repositories\Attachment\AttachmentRepositoryInterface;
 use App\Http\Repositories\TweetRepository\TweetRepository;
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Http\Repositories\UserRepository\UserRepository;
@@ -25,6 +27,8 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(TweetRepositoryInterface::class, TweetRepository::class);
+        $this->app->bind(AttachmentRepositoryInterface::class, AttachmentRepository::class);
+
 
     }
 }
