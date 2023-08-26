@@ -13,9 +13,22 @@ interface TweetRepositoryInterface
 
     public function createTweet(array $data);
 
+
+
+    /**
+     * @return JsonResponse
+     * @param int $id
+     * @param array<int,mixed> $data
+     */
+
+
+    public function updateTweet(int $id, array $data);
+
     /**
      * @return JsonResponse
      */
+
+
 
     public function getTweet(int $id);
 
@@ -30,4 +43,5 @@ interface TweetRepositoryInterface
      */
 
     public function deleteTweet(int $id);
+
 }

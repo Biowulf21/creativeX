@@ -34,6 +34,26 @@ class TweetRepository implements TweetRepositoryInterface
 
     }
 
+    public function updateTweet(int $id, array $data)
+    {
+        try {
+
+            $tweet = Tweet::findOrFail($id);
+            $tweet->tweet_body = $data['new_tweet_body'];
+
+            $tweet->save();
+            return response()->json(['message' => 'Tweet updated successfully', 'new_tweet_body'=>$tweet['tweet_body'], 'updated_tweet'=>$tweet], 200);
+
+        } catch (ModelNotFoundException) {
+
+            return response()->json(['message' => 'Cannot update. Tweet not found.'], 404);
+
+        }
+
+    }
+
+
+
     public function getTweet(int $id)
     {
         try{
