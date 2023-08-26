@@ -18,15 +18,13 @@ class TweetRepository implements TweetRepositoryInterface
         $retweet_count = 0;
         $likes_count = 0;
         $is_retweet = $data['is_retweet'] == '1' ? true : false;
-        $tweet_attachment = $data['tweet_attachment'] ??= null;
+        $tweet_attachment = $data['tweet_attachment'][0] ??= null;
 
         $data['user_id'] = $user_id; // Set the user_id
 
         $data['retweet_count'] = $retweet_count;
         $data['likes_count'] = $likes_count;
         $data['is_retweet'] = $is_retweet;
-
-        // TODO: Check if the tweet is a retweet and use retweet controller instead
 
         $new_tweet = new Tweet;
         $new_tweet->fill($data);
