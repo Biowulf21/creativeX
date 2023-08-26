@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
+use App\Http\Requests\Tweet\NewTweetRequest;
 use Illuminate\Http\Request;
 
 class TweetController extends Controller
@@ -18,7 +19,7 @@ class TweetController extends Controller
      */
     public function index()
     {
-        //
+        return $this->tweet_repository->getTweets();
     }
 
     /**
@@ -26,15 +27,14 @@ class TweetController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(NewTweetRequest $request)
     {
-        //
+        return $this->tweet_repository->createTweet($request->all());
     }
 
     /**
@@ -42,7 +42,7 @@ class TweetController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return $this->tweet_repository->getTweet($id);
     }
 
     /**
@@ -66,6 +66,6 @@ class TweetController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return $this->tweet_repository->deleteTweet($id);
     }
 }
