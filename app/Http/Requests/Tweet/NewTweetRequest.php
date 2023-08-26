@@ -26,10 +26,10 @@ class NewTweetRequest extends FormRequest
     {
         return [
             'tweet_body' => 'required|string|max:280|min:1',
-            'replying_to' => 'nullable|exists:tweets,id',
+            'replying_to' => 'nullable|int|exists:tweets,id',
             'user_id' => 'required|exists:users,id',
             'is_retweet' => 'boolean',
-            'tweet_attachment' => [ 'nullable', 'prohibited_if:is_retweet,true', 'file', 'max:2000' ]
+            'tweet_attachment' => [ 'nullable', 'prohibited_if:is_retweet,true', 'file', 'max:1', 'size:2000' ]
         ];
     }
 
@@ -40,7 +40,8 @@ class NewTweetRequest extends FormRequest
             'tweet_attachment.image' => 'The attachment must be an image',
             'tweet_attachment.mimes' => 'The attachment must be a jpeg, png, jpg, gif or svg file',
             'tweet_attachment.prohibited_if' => 'You cannot attach an image to a retweet',
-            'tweet_attachment.max'=> 'The attachment must not be more than 2MB',
+            'tweet_attachment.size'=> 'The attachment must not be more than 2MB',
+            'tweet_attachment.max'=> 'Please select only one image.',
         ];
 
     }
