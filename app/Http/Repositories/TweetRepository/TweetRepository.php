@@ -16,10 +16,9 @@ class TweetRepository implements TweetRepositoryInterface
         $new_tweet = $this->populateNewTweetAttributes($data);
         $new_tweet_attachment = $new_tweet->tweet_attachment_link;
 
-
         if ($new_tweet_attachment != null){
             $attachmentRepository = app(AttachmentRepositoryInterface::class);
-            $upload_response = $attachmentRepository->uploadAttachment($tweet_attachment);
+            $upload_response = $attachmentRepository->uploadAttachment($new_tweet_attachment);
 
             if($upload_response->status() == 500) return $upload_response;
             $new_tweet->tweet_attachment_link = $upload_response->getData()->file_path;
@@ -28,7 +27,6 @@ class TweetRepository implements TweetRepositoryInterface
         $new_tweet->save();
 
         $new_tweet = $this->findReplyingTo($new_tweet, $new_tweet->replying_to);
-
 
         return response()->json(['message' => 'Tweet created successfully', 'tweet_body'=>$new_tweet], 200);
 
