@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('tweets', function (Blueprint $table) {
             $table->id();
+            $table->string('tweet_body', 280);
+
+            $table->unsignedBigInteger('replying_to')->nullable();
+            $table->foreign('replying_to')->references('id')->on('tweets');
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->unsignedBigInteger('likes_count')->default(0);
+            $table->unsignedBigInteger('retweets_count')->default(0);
+            $table->boolean('is_retweet')->default(false);
+
             $table->timestamps();
         });
     }
