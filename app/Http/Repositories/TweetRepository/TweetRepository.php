@@ -36,6 +36,15 @@ class TweetRepository implements TweetRepositoryInterface
 
     public function getTweet(int $id)
     {
+        try{
+
+            $tweet = Tweet::findOrFail($id);
+            return response ()->json(['message' => 'Tweet retrieved successfully', 'tweet_body'=>$tweet], 200);
+        } catch (ModelNotFoundException){
+            return response()->json(['message' => 'Tweet not found'], 404);
+        }
+
+
     }
 
     public function getTweets()
