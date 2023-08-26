@@ -13,19 +13,7 @@ class Tweet extends Model
 
     protected $fillable = [
         'tweet_body',
-        'likes_count',
-        'retweet_count',
         'is_retweet',
-    ];
-
-    protected $guarded = [
         'replying_to',
-        'user_id',
-        'likes_count',
-        'retweets_count',
-        'is_retweet'
     ];
-
-
-
 }
