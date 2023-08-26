@@ -5,6 +5,7 @@ namespace App\Http\Repositories\TweetRepository;
 use App\Http\Repositories\Attachment\AttachmentRepositoryInterface;
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Models\Tweet;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,10 +40,23 @@ class TweetRepository implements TweetRepositoryInterface
             $new_tweet->tweet_attachment_link = $upload_response->getData()->file_path;
         }
 
-        echo $new_tweet->tweet_attachment;
         $new_tweet->save();
 
+        $new_tweet = $this->findReplyingTo($new_tweet, $new_tweet->replying_to);
+
+
         return response()->json(['message' => 'Tweet created successfully', 'tweet_body'=>$new_tweet], 200);
+
+    }
+
+    private function findReplyingTo(Tweet $tweet, int|null $replying_to_id)
+    {
+
+        if ($replying_to_id != null){
+            $tweet_replied_to = Tweet::find($tweet->replying_to);
+            $tweet->replying_to = $tweet_replied_to;
+        }
+        return $tweet;
 
     }
 
