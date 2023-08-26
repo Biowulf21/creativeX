@@ -24,9 +24,7 @@ class TweetFactory extends Factory
             return $tweet ? $tweet->id : null;
         }, null]);
 
-        $userID = function () {
-            return User::inRandomOrder()->first()->id;
-        };
+        $userID = fn () => User::inRandomOrder()->first()->id;
 
         return [
         'tweet_body' => fake()->realText(280),
