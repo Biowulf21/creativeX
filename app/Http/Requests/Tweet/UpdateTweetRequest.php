@@ -24,14 +24,15 @@ class UpdateTweetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'new_tweet_body' => 'required|string|max:280'
+            'new_tweet_body' => 'required|string|max:280|min:1'
         ];
     }
 
     public function messages(){
         return [
-            'new_tweet_body.exists' => 'Cannot update this tweet. It does not exist',
-            'new_tweet_body.min' => 'Tweet body cannot be less than 1 character',
+            'new_tweet_body.exists' => 'Cannot update this tweet. It does not exist.',
+            'new_tweet_body.max' => 'Tweet body cannot be more than 280 characters.',
+            'new_tweet_body.min' => 'Tweet body cannot be less than 1 character.',
         ];
 
     }
