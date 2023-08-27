@@ -118,7 +118,26 @@ class TweetUnitTest extends TestCase
         $response->assertSessionHasNoErrors();
         $response->assertStatus(200);
         $this->assertEquals($new_tweet_body, $updated_tweet_body);
-
-
     }
+
+    public function test_successfully_get_delete_tweet()
+    {
+        $this->assertDatabaseCount('tweets', 0);
+        $tweet = $this->createTweetUsingPost();
+        $this->assertDatabaseCount('tweets', 1);
+
+        $tweet_id = $tweet->id;
+        $response = $this->actingAs($this->user)->delete("/api/tweets/$tweet_id");
+
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(200);
+
+        // Check that the tweet has been soft deleted
+        $tweet = Tweet::withTrashed()->find($tweet_id);
+        $this->assertNotNull($tweet->deleted_at);
+        $this->assertDatabaseCount('tweets', 1);
+    }
+
+
+
 }
