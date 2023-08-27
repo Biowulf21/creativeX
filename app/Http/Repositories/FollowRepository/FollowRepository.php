@@ -21,38 +21,53 @@ class FollowRepository implements FollowRepositoryInterface
         return $isFollowing;
     }
 
+    private function eagerLoadWithUserData(Follow $follow)
+    {
+        try {
+            $follow = $follow->with(['follower', 'following'])->get()->first();
+            return $follow;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+    }
+
+    private function checkIfPreviouslyFollowing(int $followerUserId, int $followingUserId)
+    {
+        $wasPreviouslyFollowing = Follow::withTrashed(true)
+            ->where('follower_user_id', $followerUserId)
+            ->where('following_user_id', $followingUserId)
+            ->whereNotNull('deleted_at')
+            ->first();
 
 
+        if ($wasPreviouslyFollowing) {
+            $wasPreviouslyFollowing->restore();
+
+            $wasPreviouslyFollowing = $this->eagerLoadWithUserData($wasPreviouslyFollowing);
+
+            return response()
+                ->json(['message' => 'followed successfully',
+                        'follower'=> $followerUserId,
+                        'now_following' =>$wasPreviouslyFollowing->following]);
+        }
+
+        return false;
+    }
 
     public function follow(int $followerUserId, int $followingUserId)
     {
         try {
             //FIXME: another user can make another user follow another user
             //without their permission
-            //
-            //TODO: implement checking if the user requesting the follow request is the same as the
+            //TODO: implement middleware checking if the user id requesting the follow request is the same as the
             //one logged in
 
             $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
             if ($isFollowing) throw new AlreadyFollowingException();
 
-            $wasPreviouslyFollowing = Follow::withTrashed(true)
-                ->where('follower_user_id', $followerUserId)
-                ->where('following_user_id', $followingUserId)
-                ->whereNotNull('deleted_at')
-                ->first();
-
-
-            if ($wasPreviouslyFollowing) {
-                $wasPreviouslyFollowing->restore();
-
-                $wasPreviouslyFollowing = Follow::with('following')->get()->first();
-
-                return response()
-                    ->json(['message' => 'followed successfully',
-                            'follower'=> $followerUserId,
-                            'now_following' =>$wasPreviouslyFollowing->following]);
-            }
+            $wasPreviouslyFollowing = $this->checkIfPreviouslyFollowing($followerUserId, $followingUserId);
+            if ($wasPreviouslyFollowing !== false) return $wasPreviouslyFollowing;
 
 
             //NOTE: In case of the user spamming the follow and unfollow
@@ -61,15 +76,13 @@ class FollowRepository implements FollowRepositoryInterface
 
             $follow = Follow::create([
                 'follower_user_id' => $followerUserId,
-                'following_user_id' => $followingUserId]);
-
-            $follow = Follow::with('following')->get()->first();
+                'following_user_id' => $followingUserId])->with('following')->get()->first();
 
 
-        return response()
-            ->json(['message' => 'followed successfully',
-                    'follower'=> $followerUserId,
-                    'now_following' =>$follow->following],200);
+            return response()
+                ->json(['message' => 'followed successfully',
+                        'follower'=> $followerUserId,
+                        'now_following' =>$follow->following],200);
 
 
         } catch (AlreadyFollowingException $e){
