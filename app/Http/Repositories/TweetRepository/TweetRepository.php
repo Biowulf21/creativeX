@@ -38,8 +38,11 @@ class TweetRepository implements TweetRepositoryInterface
         if ($replying_to_id != null){
             $tweet_replied_to = Tweet::find($tweet->replying_to);
             $tweet->replying_to = $tweet_replied_to;
+        } else {
+            $tweet->replying_to = null;
         }
         return $tweet;
+
 
     }
 
@@ -55,6 +58,8 @@ class TweetRepository implements TweetRepositoryInterface
 
         $data['user_id'] = $user_id;
 
+        $replying_to = $data['replying_to'] ?? null;
+
         $data['retweet_count'] = $retweet_count;
         $data['likes_count'] = $likes_count;
         $data['is_retweet'] = $is_retweet;
@@ -63,6 +68,7 @@ class TweetRepository implements TweetRepositoryInterface
         $new_tweet->fill($data);
         $new_tweet->user_id = $user_id;
         $new_tweet->tweet_attachment_link = $tweet_attachment;
+        $new_tweet = $this->findReplyingTo($new_tweet, $replying_to);
         return $new_tweet;
 
     }
