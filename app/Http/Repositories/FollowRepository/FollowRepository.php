@@ -58,6 +58,12 @@ class FollowRepository implements FollowRepositoryInterface
 
     public function unfollow(int $followingUserId, int $followerUserId)
     {
+        $isFollowing = $this->isFollowing($followingUserId, $followerUserId);
+        if (!$isFollowing) throw UserNotFollowingException;
+
+        Follow::where(['follower_user_id' => $followerUserId, 'following_user_id' => $followingUserId])->delete();
+
+        return response()->json(['message'=> 'Successfully unfollowed the user.'], 200);
     }
 
     public function getAllFollowers(int $userId)
