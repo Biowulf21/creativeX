@@ -77,5 +77,9 @@ class FollowRepository implements FollowRepositoryInterface
 
     public function getAllFollowing(int $userId)
     {
+        $user = User::find($userId);
+        if (!$user) throw UserNotFoundException;
+
+        return $user->followings();
     }
 }
