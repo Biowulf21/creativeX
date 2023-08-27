@@ -12,20 +12,20 @@ class FollowRepository implements FollowRepositoryInterface
 {
 
     //NOTE: made public in case client needs to know if a user is following another user
-    public function isFollowing(int $followingUserId, int $followerUserId)
+    public function isFollowing(int $followerUserId, int $followingUserId)
     {
-        $isFollowing = Follow::where('follower_id', $followerUserId)
-            ->where('following_id', $followingUserId)->exists();
+        $isFollowing = Follow::where('follower_user_id', $followerUserId)
+            ->where('following_user_id', $followingUserId)->exists();
 
         return $isFollowing;
     }
 
 
-    public function follow(int $followingUserId, int $followerUserId)
+    public function follow(int $followerUserId, int $followingUserId)
     {
         try {
 
-            $isFollowing = $this->isFollowing($followingUserId, $followerUserId);
+            $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
             if ($isFollowing) throw AlreadyFollowingException;
 
             $wasPreviouslyFollowing = Follow::withTrashed(true)
@@ -56,12 +56,13 @@ class FollowRepository implements FollowRepositoryInterface
                     'now_following' =>$follow->following()],200);
     }
 
-    public function unfollow(int $followingUserId, int $followerUserId)
+    public function unfollow(int $followerUserId, int $followingUserId)
     {
-        $isFollowing = $this->isFollowing($followingUserId, $followerUserId);
+        $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
         if (!$isFollowing) throw UserNotFollowingException;
 
-        Follow::where(['follower_user_id' => $followerUserId, 'following_user_id' => $followingUserId])->delete();
+        Follow::where(['follower_user_id' => $followerUserId,
+            'following_user_id' => $followingUserId])->delete();
 
         return response()->json(['message'=> 'Successfully unfollowed the user.'], 200);
     }
@@ -80,6 +81,6 @@ class FollowRepository implements FollowRepositoryInterface
         $user = User::find($userId);
         if (!$user) throw UserNotFoundException;
 
-        return $user->followings();
+        return $user->followers();
     }
 }
