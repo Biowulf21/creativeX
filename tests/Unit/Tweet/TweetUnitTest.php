@@ -6,6 +6,9 @@ use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use Tests\TestCase;
 use App\Http\Repositories\TweetRepository\TweetRepository;
 
@@ -96,7 +99,6 @@ class TweetUnitTest extends TestCase
 
     public function test_unsuccessfully_create_tweet_no_attachment_when_retweeting()
     {
-        $fake_file = $this->faker->image();
         $tweet = Tweet::factory()->make([
             'is_retweet' => true,
             'tweet_attachment' => ['fake_image.jpg'], // Adding a dummy file just to trigger the array validation
@@ -109,6 +111,40 @@ class TweetUnitTest extends TestCase
                 'tweet_attachment'
             ],
         ]);
+    }
+
+
+    public function test_unsuccessfully_create_tweet_multiple_attachment_upload()
+    {
+        $tweet = Tweet::factory()->make([
+            'is_retweet' => true,
+            'tweet_attachment' => ['fake_image.jpg', 'fake_image2.jpg'], // Adding a dummy file just to trigger the array validation
+        ]);
+        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet->toArray());
+        $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'message',
+            'errors' => [
+                'tweet_attachment'
+            ],
+        ]);
+    }
+
+    public function test_unsuccessfully_create_tweet_attachment_too_large()
+    {
+        // Larger than 2MB
+        $fakeImage = Image::canvas(3000, 3000);
+
+        $tweet = Tweet::factory()->make([
+            'is_retweet' => false,
+            'tweet_attachment' => [$fakeImage],
+        ]);
+
+        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet->toArray());
+        $response->assertStatus(400);
+
+        Storage::disk('public')->delete($fakeImage);
+
     }
 
 
