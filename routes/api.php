@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\RetweetController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\UserController;
@@ -48,6 +49,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
                 [FollowController::class, 'unfollowUser']);
         });
     });
-
 });
 
