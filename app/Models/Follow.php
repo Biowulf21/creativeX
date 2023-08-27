@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Follow extends Model
@@ -16,13 +17,14 @@ class Follow extends Model
         'following_user_id',
     ];
 
-    public function follower()
+    public function follower(): BelongsTo
     {
-        return User::find($this->follower_user_id) ?? null;
+        return $this->belongsTo(User::class, 'follower_user_id');
     }
 
-    public function following()
+    public function following(): BelongsTo
     {
-        return User::find($this->following_user_id) ?? null;
+        return $this->belongsTo(User::class, 'following_user_id');
     }
+
 }
