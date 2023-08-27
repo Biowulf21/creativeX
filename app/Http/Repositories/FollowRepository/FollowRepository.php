@@ -21,12 +21,14 @@ class FollowRepository implements FollowRepositoryInterface
     }
 
 
+
+
     public function follow(int $followerUserId, int $followingUserId)
     {
         try {
 
             $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
-            if ($isFollowing) throw AlreadyFollowingException;
+            if ($isFollowing) throw new AlreadyFollowingException();
 
             $wasPreviouslyFollowing = Follow::withTrashed(true)
                 ->where('follower_user_id', $followerUserId)
@@ -34,9 +36,19 @@ class FollowRepository implements FollowRepositoryInterface
                 ->whereNotNull('deleted_at')
                 ->first();
 
+
             if ($wasPreviouslyFollowing) {
                 $wasPreviouslyFollowing->restore();
+
+                $follower = User::find($followerUserId);
+                $following = User::find($followingUserId);
+
+                return response()
+                    ->json(['message' => 'followed successfully',
+                            'follower'=> $follower,
+                            'now_following' =>$following]);
             }
+
 
             //NOTE: In case of the user spamming the follow and unfollow
             //We can  implement rate limiting
@@ -47,8 +59,12 @@ class FollowRepository implements FollowRepositoryInterface
                 'following_user_id' => $followingUserId]);
 
 
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
+        } catch (AlreadyFollowingException $e){
+            throw $e;
+
+        }
+          catch (\Throwable $th) {
+            return response()->json(['error' => 'Something went wrong.'], 500);
         }
         return response()
             ->json(['message' => 'followed successfully',
@@ -73,7 +89,8 @@ class FollowRepository implements FollowRepositoryInterface
 
         if (!$user) throw UserNotFoundException;
 
-        return $user->followers();
+        return response()->json(['message'=> 'Successfully received all users followed by this user.',
+            'following'=> $user->followers()], 200);
     }
 
     public function getAllFollowing(int $userId)
@@ -81,6 +98,7 @@ class FollowRepository implements FollowRepositoryInterface
         $user = User::find($userId);
         if (!$user) throw UserNotFoundException;
 
-        return $user->followers();
+        return response()->json(['message'=> 'Successfully received all users followed
+            by this user.', 'following'=> $user->following(), 200]);
     }
 }
