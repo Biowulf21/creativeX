@@ -144,7 +144,6 @@ class TweetUnitTest extends TestCase
         $response->assertStatus(400);
 
         Storage::disk('public')->delete($fakeImage);
-
     }
 
 
@@ -179,6 +178,25 @@ class TweetUnitTest extends TestCase
         'tweet' => [
             'id' => $tweet_id,
             ],
+        ]);
+    }
+
+
+
+    public function test_unsuccessfully_get_tweet_doenst_exist()
+    {
+        $tweet = $this->createTweetUsingPost();
+        $tweet_id = $tweet->id;
+
+        while (Tweet::where('id', $tweet_id)->exists()) {
+            $tweet_id++;
+        }
+
+        $response = $this->actingAs($this->user)->get("/api/tweets/$tweet_id");
+        $response->assertStatus(404);
+
+        $response->assertJson([
+            'message' => 'Tweet not found'
         ]);
     }
 
