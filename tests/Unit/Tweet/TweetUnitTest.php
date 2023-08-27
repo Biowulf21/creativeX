@@ -52,4 +52,33 @@ class TweetUnitTest extends TestCase
 
         $this->assertDatabaseCount('tweets', 1);
     }
+
+    private function createTweetUsingPost()
+    {
+
+        $this->assertDatabaseCount('tweets', 0);
+        $tweet = Tweet::factory(1)->make();
+        $tweet = $tweet->toArray();
+
+        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet[0]);
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(200);
+
+        $this->assertDatabaseCount('tweets', 1);
+
+        return Tweet::first();
+    }
+
+
+    public function test_successfully_get_specific_tweet()
+    {
+        $tweet = $this->createTweetUsingPost();
+        $tweet_id = $tweet->id;
+
+
+        $response = $this->actingAs($this->user)->get("/api/tweets/$tweet_id");
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(200);
+
+    }
 }
