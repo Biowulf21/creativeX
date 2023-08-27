@@ -24,6 +24,22 @@ class TweetUnitTest extends TestCase
         $this->repository = app(TweetRepository::class);
     }
 
+    private function createTweetUsingPost()
+    {
+
+        $this->assertDatabaseCount('tweets', 0);
+        $tweet = Tweet::factory(1)->make();
+        $tweet = $tweet->toArray();
+
+        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet[0]);
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(200);
+
+        $this->assertDatabaseCount('tweets', 1);
+
+        return Tweet::first();
+    }
+
     public function test_successfully_create_tweet()
     {
         $this->assertDatabaseCount('tweets', 0);
@@ -53,21 +69,24 @@ class TweetUnitTest extends TestCase
         $this->assertDatabaseCount('tweets', 1);
     }
 
-    private function createTweetUsingPost()
+    public function test_unsuccessfully_create_tweet_user_doesnt_exist()
     {
-
         $this->assertDatabaseCount('tweets', 0);
-        $tweet = Tweet::factory(1)->make();
-        $tweet = $tweet->toArray();
+        $this->assertDatabaseCount('users', 1);
 
-        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet[0]);
-        $response->assertSessionHasNoErrors();
-        $response->assertStatus(200);
+        $current_user_id = $this->user->id;
+        $user_not_in_db_id = $current_user_id + 1;
 
-        $this->assertDatabaseCount('tweets', 1);
+        // Loop until it finds an id that doesn't exist in the users database
+        while (User::where('id', $user_not_in_db_id)->exists()) {
+            $user_not_in_db_id++;
+        }
 
-        return Tweet::first();
-    }
+        $tweet = Tweet::factory()->make(['user_id' => $user_not_in_db_id]);
+
+        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet->toArray());
+        $response->assertStatus(400);
+}
 
 
     public function test_successfully_get_specific_tweet()
@@ -137,7 +156,5 @@ class TweetUnitTest extends TestCase
         $this->assertNotNull($tweet->deleted_at);
         $this->assertDatabaseCount('tweets', 1);
     }
-
-
 
 }
