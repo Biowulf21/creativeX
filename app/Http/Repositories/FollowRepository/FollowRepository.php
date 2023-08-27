@@ -27,6 +27,11 @@ class FollowRepository implements FollowRepositoryInterface
     public function follow(int $followerUserId, int $followingUserId)
     {
         try {
+            //FIXME: another user can make another user follow another user
+            //without their permission
+            //
+            //TODO: implement checking if the user requesting the follow request is the same as the
+            //one logged in
 
             $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
             if ($isFollowing) throw new AlreadyFollowingException();
@@ -41,13 +46,12 @@ class FollowRepository implements FollowRepositoryInterface
             if ($wasPreviouslyFollowing) {
                 $wasPreviouslyFollowing->restore();
 
-                $follower = User::find($followerUserId);
-                $following = User::find($followingUserId);
+                $wasPreviouslyFollowing = Follow::with('following')->get()->first();
 
                 return response()
                     ->json(['message' => 'followed successfully',
-                            'follower'=> $follower,
-                            'now_following' =>$following]);
+                            'follower'=> $followerUserId,
+                            'now_following' =>$wasPreviouslyFollowing->following]);
             }
 
 
@@ -59,18 +63,22 @@ class FollowRepository implements FollowRepositoryInterface
                 'follower_user_id' => $followerUserId,
                 'following_user_id' => $followingUserId]);
 
+            $follow = Follow::with('following')->get()->first();
+
+
+        return response()
+            ->json(['message' => 'followed successfully',
+                    'follower'=> $followerUserId,
+                    'now_following' =>$follow->following],200);
+
 
         } catch (AlreadyFollowingException $e){
             throw $e;
 
         }
           catch (\Throwable $th) {
-            return response()->json(['error' => 'Something went wrong.'], 500);
+            return response()->json(['error' => $th], 500);
         }
-        return response()
-            ->json(['message' => 'followed successfully',
-                    'follower'=> $follow->follower(),
-                    'now_following' =>$follow->following()],200);
     }
 
     public function unfollow(int $followerUserId, int $followingUserId)
@@ -88,10 +96,18 @@ class FollowRepository implements FollowRepositoryInterface
     {
         $user = User::find($userId);
 
-        if (!$user) throw  new UserNotFoundException;
+        if (!$user) throw new UserNotFoundException;
+
+
+        // TODO: implement pagination
+
+        // eager load the follower user data from the follower_user_id column in the follow table
+        $usersThatFollow = Follow::where('following_user_id', $userId)
+            ->with('follower')
+            ->get();
 
         return response()->json(['message'=> 'Successfully received all users followed by this user.',
-            'following'=> $user->followers()], 200);
+            'followers'=> $usersThatFollow ], 200);
     }
 
     public function getAllFollowing(int $userId)
