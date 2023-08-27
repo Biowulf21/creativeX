@@ -208,5 +208,7 @@ class UserUnitTest extends TestCase
 
     }
 
+    //TODO: Tests for logout
+
 
 }

@@ -1,14 +1,12 @@
 <?php
+namespace App\Http\Requests\Tweet;
 
-namespace App\Http\Requests;
-
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rules\Password;
 
-class signUpRequest extends FormRequest
+class UpdateTweetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,12 +24,17 @@ class signUpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => ['required','string', Password::min(10)->mixedCase()->symbols()],
-            'account_handle' => 'required|string|unique:users|max:15',
-            'bio' => 'required|string|max:160'
+            'new_tweet_body' => 'required|string|max:280|min:1'
         ];
+    }
+
+    public function messages(){
+        return [
+            'new_tweet_body.exists' => 'Cannot update this tweet. It does not exist.',
+            'new_tweet_body.max' => 'Tweet body cannot be more than 280 characters.',
+            'new_tweet_body.min' => 'Tweet body cannot be less than 1 character.',
+        ];
+
     }
 
    /**
@@ -49,4 +52,6 @@ class signUpRequest extends FormRequest
             'errors' => $validator->errors()
         ], Response::HTTP_BAD_REQUEST));
     }
+
+
 }
