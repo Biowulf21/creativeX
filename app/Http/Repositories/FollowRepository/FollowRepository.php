@@ -3,7 +3,9 @@
 namespace App\Http\Repositories\FollowRepository;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\UserNotFoundException;
 use App\Models\Follow;
+use App\Models\User;
 
 
 class FollowRepository implements FollowRepositoryInterface
