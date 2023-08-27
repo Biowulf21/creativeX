@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Tests\TestCase;
 use App\Http\Repositories\TweetRepository\TweetRepository;
@@ -216,7 +217,24 @@ class TweetUnitTest extends TestCase
         $this->assertEquals($new_tweet_body, $updated_tweet_body);
     }
 
-    public function test_successfully_get_delete_tweet()
+    public function test_unsuccessfully_update_tweet_bad_parameters()
+    {
+        $tweet = $this->createTweetUsingPost();
+        $old_tweet_body = $tweet->tweet_body;
+        $tweet_id = $tweet->id;
+
+        $new_tweet_body = Str::random(281);
+        $patch_payload = ['new_tweet_body' => $new_tweet_body ];
+
+        $response = $this->actingAs($this->user)->patch("/api/tweets/$tweet_id", $patch_payload);
+
+        $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'message'
+        ]);
+    }
+
+    public function test_successfully_delete_tweet()
     {
         $this->assertDatabaseCount('tweets', 0);
         $tweet = $this->createTweetUsingPost();
@@ -232,6 +250,23 @@ class TweetUnitTest extends TestCase
         $tweet = Tweet::withTrashed()->find($tweet_id);
         $this->assertNotNull($tweet->deleted_at);
         $this->assertDatabaseCount('tweets', 1);
+    }
+
+    public function test_unsuccessfully_delete_tweet_doesnt_exist()
+    {
+        $this->assertDatabaseCount('tweets', 0);
+        $tweet_id = 1;
+
+        while (Tweet::where('id', $tweet_id)->exists()) {
+            $tweet_id++;
+        }
+
+        $response = $this->actingAs($this->user)->delete("/api/tweets/$tweet_id");
+
+        $response->assertStatus(404);
+        $response->assertJsonStructure([
+            'message',
+        ]);
     }
 
 }
