@@ -74,11 +74,34 @@ class TweetUnitTest extends TestCase
     {
         $tweet = $this->createTweetUsingPost();
         $tweet_id = $tweet->id;
+        echo $tweet_id;
 
 
         $response = $this->actingAs($this->user)->get("/api/tweets/$tweet_id");
         $response->assertSessionHasNoErrors();
         $response->assertStatus(200);
 
+        $response->assertJsonStructure([
+            'message',
+            'tweet' => [
+                'id',
+                'tweet_body',
+                'replying_to',
+                'user_id',
+                'likes_count',
+                'retweets_count',
+                'is_retweet',
+                'tweet_attachment_link',
+                'deleted_at',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+
+        $response->assertJson([
+        'tweet' => [
+            'id' => $tweet_id,
+            ],
+        ]);
     }
 }
