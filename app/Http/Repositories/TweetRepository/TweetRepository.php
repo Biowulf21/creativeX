@@ -28,7 +28,7 @@ class TweetRepository implements TweetRepositoryInterface
 
         $new_tweet = $this->findReplyingTo($new_tweet, $new_tweet->replying_to);
 
-        return response()->json(['message' => 'Tweet created successfully', 'tweet_body'=>$new_tweet], 200);
+        return response()->json(['message' => 'Tweet created successfully', 'tweet'=>$new_tweet], 200);
 
     }
 
