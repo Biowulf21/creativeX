@@ -3,6 +3,7 @@
 namespace App\Http\Repositories\FollowRepository;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Exceptions\UserNotFollowingException;
 use App\Exceptions\UserNotFoundException;
 use App\Models\Follow;
 use App\Models\User;
@@ -75,7 +76,7 @@ class FollowRepository implements FollowRepositoryInterface
     public function unfollow(int $followerUserId, int $followingUserId)
     {
         $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
-        if (!$isFollowing) throw UserNotFollowingException;
+        if (!$isFollowing) throw new UserNotFollowingException;
 
         Follow::where(['follower_user_id' => $followerUserId,
             'following_user_id' => $followingUserId])->delete();
@@ -87,7 +88,7 @@ class FollowRepository implements FollowRepositoryInterface
     {
         $user = User::find($userId);
 
-        if (!$user) throw UserNotFoundException;
+        if (!$user) throw  new UserNotFoundException;
 
         return response()->json(['message'=> 'Successfully received all users followed by this user.',
             'following'=> $user->followers()], 200);
@@ -96,7 +97,7 @@ class FollowRepository implements FollowRepositoryInterface
     public function getAllFollowing(int $userId)
     {
         $user = User::find($userId);
-        if (!$user) throw UserNotFoundException;
+        if (!$user) throw new UserNotFoundException;
 
         return response()->json(['message'=> 'Successfully received all users followed
             by this user.', 'following'=> $user->following(), 200]);
