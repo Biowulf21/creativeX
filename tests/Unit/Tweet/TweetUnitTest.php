@@ -86,7 +86,30 @@ class TweetUnitTest extends TestCase
 
         $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet->toArray());
         $response->assertStatus(400);
-}
+        $response->assertJsonStructure([
+            'message',
+            'errors' => [
+                'user_id'
+            ],
+        ]);
+    }
+
+    public function test_unsuccessfully_create_tweet_no_attachment_when_retweeting()
+    {
+        $fake_file = $this->faker->image();
+        $tweet = Tweet::factory()->make([
+            'is_retweet' => true,
+            'tweet_attachment' => ['fake_image.jpg'], // Adding a dummy file just to trigger the array validation
+        ]);
+        $response = $this->actingAs($this->user)->post("/api/tweets/", $tweet->toArray());
+        $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'message',
+            'errors' => [
+                'tweet_attachment'
+            ],
+        ]);
+    }
 
 
     public function test_successfully_get_specific_tweet()
