@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Follow extends Model
@@ -12,19 +11,18 @@ class Follow extends Model
     use HasFactory;
     use SoftDeletes;
 
-    private $fillable = [
+    protected $fillable = [
         'follower_user_id',
         'following_user_id',
     ];
 
-    public function follower(): HasOne
+    public function follower()
     {
-        return $this->hasOne(User::class, 'id', 'follower_user_id');
-
+        return User::find($this->follower_user_id) ?? null;
     }
 
-    public function following(): HasOne
+    public function following()
     {
-        return $this->hasOne(User::class, 'id', 'following_user_id');
+        return User::find($this->following_user_id) ?? null;
     }
 }
