@@ -74,7 +74,6 @@ class TweetUnitTest extends TestCase
     {
         $tweet = $this->createTweetUsingPost();
         $tweet_id = $tweet->id;
-        echo $tweet_id;
 
 
         $response = $this->actingAs($this->user)->get("/api/tweets/$tweet_id");
@@ -103,5 +102,23 @@ class TweetUnitTest extends TestCase
             'id' => $tweet_id,
             ],
         ]);
+    }
+
+    public function test_update_tweet()
+    {
+        $tweet = $this->createTweetUsingPost();
+        $old_tweet_body = $tweet->tweet_body;
+        $tweet_id = $tweet->id;
+
+        $new_tweet_body = 'This is the new tweet body';
+        $patch_payload = ['new_tweet_body' => $new_tweet_body ];
+        $response = $this->actingAs($this->user)->patch("/api/tweets/$tweet_id", $patch_payload);
+        $updated_tweet_body = $response->json()['new_tweet_body'];
+
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(200);
+        $this->assertEquals($new_tweet_body, $updated_tweet_body);
+
+
     }
 }
