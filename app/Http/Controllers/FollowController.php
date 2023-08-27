@@ -34,6 +34,17 @@ class FollowController extends Controller
         return $this->follow_repository->follow($following_id, $follower_id);
     }
 
+    // FollowRequest has the same parameters needed as an UnfollowRequest
+    // Decided not to make another one because of that
+    public function unfollowUser(FollowRequest $request)
+    {
+        $follower_id = $request->follower_id;
+        $following_id = $request->following_id;
+
+        return $this->follow_repository->unfollow($following_id, $follower_id);
+
+    }
+
 
 
 }
