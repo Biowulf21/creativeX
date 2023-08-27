@@ -6,8 +6,8 @@ use Exception;
 
 class AlreadyFollowingException extends Exception
 {
-    public function render()
+    public function render($request)
     {
-        return response()->json(['message' => 'You are already following this user', 'status' => 'error'], 409);
+        return response()->json(['message' => 'Already following this user.',], 409);
     }
 }
