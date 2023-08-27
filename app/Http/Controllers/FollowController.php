@@ -24,4 +24,16 @@ class FollowController extends Controller
     }
 
 
+    public function followUser(FollowRequest $request)
+    {
+        $follower_id = $request->follower_id;
+        $following_id = $request->following_id;
+
+        // TODO: implement checking if the user being followed allows
+        // their account to be followed
+        return $this->follow_repository->follow($following_id, $follower_id);
+    }
+
+
+
 }
