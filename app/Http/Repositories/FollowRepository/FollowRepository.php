@@ -38,6 +38,10 @@ class FollowRepository implements FollowRepositoryInterface
                 $wasPreviouslyFollowing->restore();
             }
 
+            //NOTE: In case of the user spamming the follow and unfollow
+            //We can  implement rate limiting
+            //read here: https://laravel.com/docs/10.x/rate-limiting#main-content
+
             $follow = Follow::create([
                 'follower_user_id' => $followerUserId,
                 'following_user_id' => $followingUserId]);
