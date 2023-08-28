@@ -19,7 +19,7 @@ class EnsureUserAuthorizedFollowActions
             $loggedInUserId = auth()->id();
 
             if ($followerUserId != $loggedInUserId) {
-                return response()->json(['message' => 'Unauthorized action'], 403);
+                return response()->json(['message' => 'Unauthorized action. Please check if the user ID matches the request parameters.'], 403);
             }
 
             return $next($request);
