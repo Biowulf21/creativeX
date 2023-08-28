@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Repositories\TweetRepository\TweetRepositoryInterface;
 use App\Http\Requests\Tweet\NewTweetRequest;
 use App\Http\Requests\Tweet\UpdateTweetRequest;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,13 @@ class TweetController extends Controller
      */
     public function create(): JsonResponse
     {
+    }
+
+    public function getUserTweets(int $user_id): JsonResponse
+    {
+        $user = User::findOrfail($user_id);
+        return $this->tweet_repository->getUserTweets($user_id);
+
     }
 
     /**
