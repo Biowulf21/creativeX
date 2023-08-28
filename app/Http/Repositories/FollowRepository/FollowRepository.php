@@ -55,13 +55,20 @@ class FollowRepository implements FollowRepositoryInterface
         return false;
     }
 
+    public function checkIfUserToBeFollowedExists(int $followingUserId)
+    {
+        $user = User::find($followingUserId);
+
+        if (!$user) return false;
+        return true;
+    }
+
     public function follow(int $followerUserId, int $followingUserId)
     {
         try {
-            //FIXME: another user can make another user follow another user
-            //without their permission
-            //TODO: implement middleware checking if the user id requesting the follow request is the same as the
-            //one logged in
+
+            $userExists = $this->checkIfUserToBeFollowedExists($followingUserId);
+            if (!$userExists) throw new UserNotFoundException('Cannot follow a user that doesn\'t exist.');
 
             $isFollowing = $this->isFollowing($followerUserId, $followingUserId);
             if ($isFollowing) throw new AlreadyFollowingException();
@@ -85,9 +92,11 @@ class FollowRepository implements FollowRepositoryInterface
                         'now_following' =>$follow->following],200);
 
 
-        } catch (AlreadyFollowingException $e){
+        } catch (UserNotFoundException $e) {
             throw $e;
 
+        } catch (AlreadyFollowingException $e){
+            throw $e;
         }
           catch (\Throwable $th) {
             return response()->json(['error' => $th], 500);
