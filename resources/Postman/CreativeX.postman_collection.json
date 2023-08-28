@@ -1,0 +1,549 @@
+{
+	"info": {
+		"_postman_id": "8298cff3-0773-46e5-8ad1-0d9bfe7f3a74",
+		"name": "CreativeX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19880970"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign Up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body as JSON",
+									"var responseBody = JSON.parse(pm.response.text());",
+									"",
+									"// Extract the \"token\" value",
+									"var token = responseBody.token;",
+									"",
+									"// Store the extracted token value in the environment variable",
+									"pm.environment.set('token', token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "password",
+									"value": "Pathfinder2117!",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "James Jilhaney",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "email@email.com",
+									"type": "text"
+								},
+								{
+									"key": "account_handle",
+									"value": "biowulf",
+									"type": "text"
+								},
+								{
+									"key": "bio",
+									"value": "test bio",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURl}}/signup",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body as JSON",
+									"var responseBody = JSON.parse(pm.response.text());",
+									"",
+									"// Extract the \"token\" value",
+									"var token = responseBody.token;",
+									"",
+									"// Store the extracted token value in the environment variable",
+									"pm.environment.set('token', token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "password",
+									"value": "Pathfinder2117!",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "email@email.com",
+									"type": "text"
+								},
+								{
+									"key": "confirm_password",
+									"value": "Pathfinder2117!\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURl}}/login",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log Out",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURl}}/logout",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tweets",
+			"item": [
+				{
+					"name": "Create New Tweet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tweet_body",
+									"value": "This is a test tweet",
+									"type": "text"
+								},
+								{
+									"key": "replying_to",
+									"value": "3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "is_retweet",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "tweet_attachment[0]",
+									"type": "file",
+									"src": "/home/biowulf21/Wallpapers/Raiden Shogun/raiden_8.jpg"
+								},
+								{
+									"key": "tweet_attachment[1]",
+									"type": "file",
+									"src": "/home/biowulf21/Wallpapers/Raiden Shogun/raiden_slash.jpg",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURl}}/tweets",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Tweet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURl}}/tweets/3",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"tweets",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tweets By User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURl}}/user/1/tweets",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"user",
+								"1",
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Specific Tweet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "new_tweet_body",
+									"value": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURl}}/tweets/1",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"tweets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Specific Tweet Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{baseURl}}/tweets/15",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"tweets",
+								"15"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Follow",
+			"item": [
+				{
+					"name": "Follow a User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURl}}/user/11/follow/1",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"user",
+								"11",
+								"follow",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unfollow a User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURl}}/user/11/follow/10",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"user",
+								"11",
+								"follow",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Followers of a User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURl}}/user/123132/followers",
+							"host": [
+								"{{baseURl}}"
+							],
+							"path": [
+								"user",
+								"123132",
+								"followers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
