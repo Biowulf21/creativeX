@@ -115,9 +115,12 @@ class FollowRepository implements FollowRepositoryInterface
         // TODO: implement pagination
 
         // eager load the follower user data from the follower_user_id column in the follow table
-        $usersThatFollow = Follow::where('following_user_id', $userId)
+        $follows = Follow::where('following_user_id', $userId)
             ->with('follower')
             ->get();
+
+        $usersThatFollow = collect($follows)->pluck('follower');
+
 
         return response()->json(['message'=> 'Successfully received all users followed by this user.',
             'followers'=> $usersThatFollow ], 200);
@@ -128,7 +131,13 @@ class FollowRepository implements FollowRepositoryInterface
         $user = User::find($userId);
         if (!$user) throw new UserNotFoundException;
 
+        $followings = Follow::where('follower_user_id', $userId)
+            ->with('followig')
+            ->get();
+
+        $usersBeingFollowed = collect($followings)->pluck('following');
+
         return response()->json(['message'=> 'Successfully received all users followed
-            by this user.', 'following'=> $user->following(), 200]);
+            by this user.', 'following'=> $usersBeingFollowed, 200]);
     }
 }
