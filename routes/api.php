@@ -31,5 +31,23 @@ Route::controller(UserController::class)->group(function(){
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('tweets', TweetController::class);
     Route::resource('retweets', RetweetController::class);
+
+    Route::prefix('user/')->group(function(){
+        Route::get('{user_id}/tweets/', [TweetController::class, 'getUserTweets']);
+
+        Route::get('{user_id}/followers' ,[FollowController::class, 'getFollowers']);
+        Route::get('{user_id}/following' ,[FollowController::class, 'getFollowings']);
+
+        // Check if follower_user_id is the same as the authenticated user
+        Route::middleware(EnsureUserAuthorizedFollowActions::class)->group(function(){
+
+            Route::post('{follower_user_id}/follow/{following_user_id}',
+                [FollowController::class, 'followUser']);
+
+            Route::delete('{follower_user_id}/follow/{following_user_id}',
+                [FollowController::class, 'unfollowUser']);
+        });
+    });
+
 });
 

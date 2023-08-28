@@ -73,6 +73,13 @@ class TweetRepository implements TweetRepositoryInterface
 
     }
 
+    public function getUserTweets(int $user_id)
+    {
+        $tweets = Tweet::where('user_id', $user_id)->get();
+        return response()->json(['message' => 'Tweets retrieved successfully', 'tweets'=>$tweets], 200);
+
+    }
+
     public function updateTweet(int $id, array $data)
     {
         try {
