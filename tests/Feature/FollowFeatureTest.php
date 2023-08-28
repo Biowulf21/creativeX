@@ -10,6 +10,10 @@ use Tests\TestCase;
 
 class FollowFeatureTest extends TestCase
 {
+
+    use RefreshDatabase;
+    use WithFaker;
+
     private User $user;
     private $repository;
     public function setUp(): void
@@ -28,14 +32,15 @@ class FollowFeatureTest extends TestCase
         $user_array = $user->toArray()[0];
         $user_array['password'] = 'Password123!';
 
+
         $response = $this->actingAs($this->user)->post("/api/signup/", $user_array);
         $response->assertSessionHasNoErrors();
-        print_r($response->json());
         $response->assertStatus(200);
-
         $this->assertDatabaseCount('users', 2);
 
-        return $user;
+        $user_data = $response->json()['user'];
+
+        return $user_data;
     }
 
     public function test_successfully_follow_user()
@@ -43,18 +48,44 @@ class FollowFeatureTest extends TestCase
         $this->assertDatabaseCount('follows', 0);
         $this->assertDatabaseCount('users', 1);
 
-        $user = $this->createUserUsingPost()[0];
+        $user = $this->createUserUsingPost();
 
-        $following_id = $user->id;
+        $following_id = $user['id'];
 
         $this->assertDatabaseCount('users', 2);
 
-        $url = '/user/' . $this->user->id . '/follow/'.$following_id;
+        $url = 'api/user/' . $this->user->id . '/follow/'.$following_id;
 
         $response = $this->actingAs($this->user)->post($url);
 
         $response->assertSessionHasNoErrors();
         $response->assertStatus(200);
+        $this->assertDatabaseHas('follows', [
+                'follower_user_id' => $this->user->id,
+                'following_user_id' => $following_id,
+            ]);
+    }
+
+
+    public function test_unsuccessfully_follow_user_user_to_be_followed_doesnt_exist()
+    {
+        $this->assertDatabaseCount('follows', 0);
+        $this->assertDatabaseCount('users', 1);
+
+        $nonExistentUserId = 999; // An ID that doesn't exist in the users table
+
+        $url = 'api/user/' . $this->user->id . '/follow/' . $nonExistentUserId;
+
+        $response = $this->actingAs($this->user)->post($url);
+
+        $response->assertStatus(404);
+        $response->assertJson([
+            'message' => 'Cannot follow a user that doesn\'t exist.',
+        ]);
+
+        // Assert that no relationship has been created in the database
+        $this->assertDatabaseCount('follows', 0);
+
     }
 
 
